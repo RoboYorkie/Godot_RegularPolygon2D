@@ -20,12 +20,13 @@ func printd(arg1, arg2 = "", arg3 = ""):
 		print(arg1,arg2,arg3)
 
 func draw_poly(p_size, p_color, p_texture):
+	p_size /= 2
 	var th = 2*PI/num_sides
 	var pts = PoolVector2Array()
 	var off = Vector2()
 	
 	if !centered:
-		off = Vector2(size + border_size, size + border_size)
+		off = Vector2(size/2 + border_size, size/2 + border_size)
 	
 	printd("off: ", off)
 	for i in range(num_sides):
