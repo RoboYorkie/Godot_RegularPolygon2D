@@ -3,4 +3,4 @@ RegularPolygon2D Node for Godot game Engine. Quickly create polygons with equal 
 
 Supports borders and textures.
 
-[!Demo Gif](demo/demo.gif)
+![Demo Gif](demo/demo.gif)
