@@ -1,10 +1,14 @@
 # Godot_RegularPolygon2D
-RegularPolygon2D Node for Godot game Engine. Quickly create polygons with equal sides and angles.
+RegularPolygon2D Node for Godot game Engine. Support the following:
 
-Supports borders and textures.
+* Quickly create polygons with equal sides and angles.
+* Add custom border to polygons
+* Add texture [e.g. gradient texture] to polygon
+* Automatically configures collision shape of eligable parent nodes at run-time. [e.g. RigidBody2D]
 
+Basic shapes, border and texture demo:
 ![Demo Gif](demo/demo.gif)
 
 
-And automatic collision shape configuration.
+Collision demo:
 ![Demo2 Gif](demo/demo2.gif)
