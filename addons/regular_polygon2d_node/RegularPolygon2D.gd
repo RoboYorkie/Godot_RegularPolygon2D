@@ -1,22 +1,71 @@
-tool
+@tool
 extends Node2D
 
-export(bool) var centered setget centered_set, centered_get
-# export(bool) var axis_snap setget axis_snap_set, axis_snap_get
+@export var centered:bool:
+	set(val):
+		centered = val
+		queue_redraw()
+	get:
+		return centered
 
-export(int, 3, 100) var num_sides = 3 setget num_sides_set, num_sides_get
-export(float) var size = 64 setget size_set, size_get
-export(Color) var polygon_color = Color(36.0/256.0,138.0/256.0,199.0/256.0) setget polygon_color_set, polygon_color_get
-export(Texture) var polygon_texture setget polygon_texture_set, polygon_texture_get
+@export_range(3, 100, 1) var num_sides = 3:
+	set(val):
+		num_sides = val
+		queue_redraw()	
+	get:
+		return num_sides	
 
-export(float) var border_size = 4 setget border_size_set, border_size_get
-export(Color) var border_color = Color(0,0,0) setget border_color_set, border_color_get
+@export var size : float= 64.0:
+	set(val):
+		size = val
+		queue_redraw()
+	get:
+		return size
 
-export(float, -360, 360) var polygon_rotation setget polygon_rotation_set, polygon_rotation_get
+@export_color_no_alpha var polygon_color = Color(36.0/256.0,138.0/256.0,199.0/256.0):
+	set(color):
+		polygon_color = color
+		queue_redraw()
+	get:
+		return polygon_color
 
-# Configure a collision shape if the parent is a CollisionObject2D.
-# e.g. KinematicBody2D, RigidyBody2D, Area2D, or StaticBody2D
-export(bool) var collision_shape = true setget parent_collision_shape_set, parent_collision_shape_get
+
+@export var polygon_texture:  Texture:
+	set(texture):
+		polygon_texture = texture
+		queue_redraw()
+	get:
+		return polygon_texture
+	
+	
+@export var border_size :float = 4.0:
+	set(size):
+		border_size = size
+		queue_redraw()
+	get:
+		return border_size
+
+
+@export_color_no_alpha var border_color = Color(0,0,0):
+	set(color):
+		border_color = color
+		queue_redraw()
+	get:
+		return border_color
+		
+@export_range(-360, 360, 1) var polygon_rotation: float:
+
+	set(rot):
+		polygon_rotation = rot
+		queue_redraw()
+	get:
+		return polygon_rotation
+		
+@export var collision_shape:bool = true:
+	set(p_val):
+		collision_shape = p_val
+	get:
+		return collision_shape
 
 var DEBUG_NONE = -9999
 var DEBUG_INFO = 0
@@ -37,20 +86,23 @@ func poly_offset():
 		return Vector2(size/2 + border_size, size/2 + border_size)
 	return Vector2(0,0)
 
+func polar_to_cartesian(radius, angle):
+	return radius * Vector2.from_angle(angle)
+
 func poly_pts(p_size):
 	p_size /= 2
 	var th = 2*PI/num_sides
-	var pts = PoolVector2Array()
+	var pts = PackedVector2Array()
 	var off = poly_offset()
 	vlog("off: ", off)
 	for i in range(num_sides):
-		pts.append(off + polar2cartesian(p_size, deg2rad(-90+polygon_rotation) + i*th))
+		pts.append(off + polar_to_cartesian(p_size, deg_to_rad(-90+polygon_rotation) + i*th))
 	return pts
 
 func draw_poly(p_size, p_color, p_texture):
 	var pts = poly_pts(p_size)
 
-	var uvs = PoolVector2Array()	
+	var uvs = PackedVector2Array()	
 	if p_texture:
 		var ts = polygon_texture.get_size()
 		vlog(" ts: ", ts)
@@ -59,7 +111,7 @@ func draw_poly(p_size, p_color, p_texture):
 
 	vlog("pts: ", pts)
 	vlog("uvs: ", uvs)
-	draw_colored_polygon(pts, p_color, uvs, p_texture, polygon_texture, true)
+	draw_colored_polygon(pts, p_color, uvs, p_texture)
 	
 func _notification(what):
 	if what == NOTIFICATION_DRAW:
@@ -85,70 +137,3 @@ func _notification(what):
 			var col = CollisionShape2D.new()
 			col.shape = shape
 			p.call_deferred("add_child", col)
-
-
-func parent_collision_shape_set(p_val):
-	collision_shape = p_val
-
-func parent_collision_shape_get():
-	return collision_shape
-
-func polygon_texture_set(texture):
-	polygon_texture = texture
-	update()
-
-func polygon_texture_get():
-	return polygon_texture
-
-func centered_set(val):
-	centered = val
-	update()
-
-func centered_get():
-	return centered
-
-func border_color_set(color):
-	border_color = color
-	update()
-
-func border_color_get():
-	return border_color
-
-func polygon_color_set(color):
-	polygon_color = color
-	update()
-
-func polygon_color_get():
-	return polygon_color
-
-func polygon_rotation_set(rot):
-	polygon_rotation = rot
-	update()
-
-func polygon_rotation_get():
-	return polygon_rotation
-
-func border_size_set(size):
-	border_size = size
-	update()
-
-func border_size_get():
-	return border_size
-
-func num_sides_set(sides):
-	num_sides = sides
-	update()
-
-func num_sides_get():
-	return num_sides
-
-func size_set(s):
-	size = s
-	update()
-
-func size_get():
-	return size
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
